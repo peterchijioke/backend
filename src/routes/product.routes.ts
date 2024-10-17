@@ -1,21 +1,20 @@
-// routes/product.routes.ts
-
 import express from 'express';
 import { authenticateJWT } from '../middlewares/auth.middleware';
 import { getAllProducts, addProduct, updateProduct, deleteProduct } from '../controllers/product.controller';
+import { authenticateAdmin } from '../middlewares/admin.middleware';
 
 const router = express.Router();
 
 // Get all products (Public Route)
 router.get('/', getAllProducts);
 
-// Add new product (Protected Route - Product Owner Only)
-router.post('/', authenticateJWT, addProduct);
+// Add new product (Protected Route - Admin Only)
+router.post('/', authenticateJWT, authenticateAdmin, addProduct);
 
-// Update a product (Protected Route - Product Owner Only)
-router.put('/:id', authenticateJWT, updateProduct);
+// Update a product (Protected Route - Admin Only)
+router.put('/:id', authenticateJWT, authenticateAdmin, updateProduct);
 
-// Delete a product (Protected Route - Product Owner Only)
-router.delete('/:id', authenticateJWT, deleteProduct);
+// Delete a product (Protected Route - Admin Only)
+router.delete('/:id', authenticateJWT, authenticateAdmin, deleteProduct);
 
 export default router;
