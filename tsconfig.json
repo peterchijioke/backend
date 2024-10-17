@@ -108,7 +108,9 @@
 
     /* Completeness */
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true   ,    
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true/* Skip type checking all .d.ts files. */
   },
   "include": ["src/**/*.ts", "server.ts"], // Adjust paths as per your project structure
   "exclude": ["node_modules"]
