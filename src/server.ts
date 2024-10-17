@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import app from './app'; // Import the app from app.ts
+import app from './app'; 
 
 const dbURI = process.env.MONGODB_URI??""
 

@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
-// Custom error handler middleware
 const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack); // Log the error stack for debugging
+  console.error(err.stack);
 
-  const status = err.status || 500; // Use status from error or default to 500 (Internal Server Error)
-  const message = err.message || 'Something went wrong'; // Use the error message or a generic one
+  const status = err.status || 500;
+  const message = err.message || 'Something went wrong';
 
   res.status(status).json({
     status,

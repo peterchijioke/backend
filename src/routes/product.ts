@@ -5,17 +5,15 @@ import { HttpError } from '../utils/httpError';
 
 const router = express.Router();
 
-// Get all products (Public Route)
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const products = await Product.find();
     res.json(products);
   } catch (error) {
-    next(error);  // Pass error to middleware
+    next(error);
   }
 });
 
-// Add new product (Protected Route - Admin Only)
 router.post('/', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   const { name, price, description, quantity } = req.body;
 
@@ -24,20 +22,19 @@ router.post('/', authenticateJWT, async (req: Request, res: Response, next: Next
     await product.save();
     res.status(201).json(product);
   } catch (error) {
-    next(error);  // Pass error to middleware
+    next(error);
   }
 });
 
-// Delete a product (Protected Route - Admin Only)
 router.delete('/:id', authenticateJWT, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
-      throw new HttpError('Product not found', 404);  // Use custom HttpError
+      throw new HttpError('Product not found', 404);
     }
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    next(error);  // Pass error to middleware
+    next(error);
   }
 });
 

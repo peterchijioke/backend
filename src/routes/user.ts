@@ -1,11 +1,10 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { User } from '../models/user.model'; // Adjust the path as necessary
+import express, { Request, NextFunction } from 'express';
+import { User } from '../models/user.model';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-// User Registration
 router.post('/register', async (req: Request, res: any, next: NextFunction) => {
   const { email, password } = req.body;
 
@@ -25,7 +24,6 @@ router.post('/register', async (req: Request, res: any, next: NextFunction) => {
   }
 });
 
-// User Login
 router.post('/login', async (req: Request, res: any, next: NextFunction) => {
   const { email, password } = req.body;
 
@@ -43,7 +41,6 @@ router.post('/login', async (req: Request, res: any, next: NextFunction) => {
   }
 });
 
-// Get User Profile (Protected Route)
 router.get('/profile', async (req: any, res: any, next: NextFunction) => {
   try {
     const userId = req.user.id; 
