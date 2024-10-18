@@ -1,64 +1,84 @@
-
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { Product } from '../models/product.model';
 
-// Get all products (Public Route)
-export const getAllProducts = async (req: any, res: any, next: NextFunction) => {
+export const getAllProducts = async (req: any, res: any) => {
   try {
     const products = await Product.find();
-    res.json(products);
+    return res.status(200).json({
+      status: 'success',
+      products,
+    });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Server error',
+    });
   }
 };
 
-// Add new product (Protected Route - Product Owner Only)
-export const addProduct = async (req: any, res: any, next: NextFunction) => {
+export const addProduct = async (req: any, res: any) => {
   const { name, price, description, quantity } = req.body;
 
   try {
     const product = new Product({ name, price, description, quantity, owner: req.user.id });
     await product.save();
-    res.status(201).json(product);
+    return res.status(201).json({
+      status: 'success',
+      message: 'Product added successfully',
+      product,
+    });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to add product',
+    });
   }
 };
 
-// Update a product (Protected Route - Product Owner Only)
-export const updateProduct = async (req: any, res: any, next: NextFunction) => {
+export const updateProduct = async (req: any, res: any) => {
+  const { id } = req.params;
+  const updates = req.body;
+
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findByIdAndUpdate(id, updates, { new: true });
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({
+        status: 'error',
+        message: 'Product not found',
+      });
     }
-
-    if (product.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to update this product' });
-    }
-
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedProduct);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Product updated successfully',
+      product,
+    });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to update product',
+    });
   }
 };
 
-// Delete a product (Protected Route - Product Owner Only)
-export const deleteProduct = async (req: any, res: any, next: NextFunction) => {
+export const deleteProduct = async (req: any, res: any) => {
+  const { id } = req.params;
+
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    if (!deletedProduct) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Product not found',
+      });
     }
-
-    if (product.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to delete this product' });
-    }
-
-    await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Product deleted successfully' });
+    return res.status(200).json({
+      status: 'success',
+      message: 'Product deleted successfully',
+    });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      status: 'error',
+      message: 'Failed to delete product',
+    });
   }
 };
